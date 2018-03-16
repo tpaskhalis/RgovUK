@@ -2,5 +2,5 @@
 
 export(get_filters)
 export(govuk_get_filters)
-import(RSelenium)
-import(XML)
+export(govuk_use_filter)
+export(use_filter)
