@@ -1,1 +1,2 @@
-BASEURL <- "https://www.gov.uk/government/publications"
+BASEURL <- "https://www.gov.uk"
+PUBLICATIONS <- "/government/publications"

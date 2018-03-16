@@ -25,7 +25,8 @@ get_filters <- function(field = c("all", "values", "descriptors")) {
   field <- match.arg(field)
   
   .denv$driver <- create_driver()
-  .denv$driver$navigate(BASEURL)
+  url <- paste0(BASEURL, PUBLICATIONS)
+  .denv$driver$navigate(url)
   src <- .denv$driver$getPageSource()
   filters <- parse_filters(src, field = field)
   filters
