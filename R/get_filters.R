@@ -1,3 +1,6 @@
+# create environment for Selenium driver
+.denv <- new.env(parent = emptyenv())
+
 #' Get all document search filters applicable to government publications
 #'
 #' \code{get_filters} parses the filter options available for selecting
@@ -17,19 +20,52 @@
 #' 
 #' @return list with fields specified in the arguments
 #' 
-#' @import RSelenium
-#' @import XML
-#' 
 #' @export
 get_filters <- function(field = c("all", "values", "descriptors")) {
   field <- match.arg(field)
   
-  rD <- RSelenium::rsDriver(browser = "chrome", verbose = FALSE)
-  remDr <- rD[["client"]]
-  remDr$navigate(BASEURL)
-  src <- remDr$getPageSource()
+  .denv$driver <- create_driver()
+  .denv$driver$navigate(BASEURL)
+  src <- .denv$driver$getPageSource()
   filters <- parse_filters(src, field = field)
   filters
+}
+
+#' Filter publications based on selection criteria
+#' 
+#' @param selection Must be either a value that defines option from a drop-down
+#' menu (retrieved with \link{get_filters}) or a text to be inserted in search
+#' bar (keyword or date ranges)
+#' @param filter_type Type of filter to which the selection is applied 
+#' (drop-down menu by default)
+#' 
+#' @export 
+use_filter <- function(selection, filter_type = c("menu", "text")) {
+  type <- match.arg(filter_type)
+  
+  if (!is.character(selection)) {
+    stop(paste0("Selection must be character ",
+                "(either drop-down option or search/date entry"))
+  }
+  
+  if (type == "menu") {
+    xpath <- paste(c("//form[@id='document-filter']",
+                     "fieldset",
+                     "div[contains(@class,'filter')]/",
+                     sprintf("option[@value='%s']", selection)
+                     ), collapse = "/")
+    filter <- .denv$driver$findElement("xpath", xpath)
+    filter$clickElement()
+  }
+  else {
+    xpath <- paste(c("//form[@id='document-filter']",
+                     "fieldset",
+                     "div[contains(@class,'filter')]/",
+                     sprintf("input[@name='%s']", selection)
+                     ), collapse = "/")
+    filter <- .denv$driver$findElement("xpath", xpath)
+    filter$sendKeysToElement(list(selection))
+  }
 }
 
 # Parse block with document search filters.
@@ -125,3 +161,7 @@ get_html_body <- function(src) {
 #' @rdname get_filters
 #' @export
 govuk_get_filters <- get_filters
+
+#' @rdname use_filter
+#' @export
+govuk_use_filter <- use_filter
