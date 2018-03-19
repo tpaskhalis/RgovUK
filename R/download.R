@@ -31,10 +31,8 @@ download_files <- function(directory, type = c("all", "csv", "pdf")) {
 #' Download the HTML source of pages published on gov.uk publications
 #' \url{https://www.gov.uk/government/publications}
 #' 
-#' @param directory Specify directory for download
-#'
 #' @export
-download_pages <- function(directory) {
+download_pages <- function() {
   repeat {
     src <- .govenv$driver$getPageSource()
     res <- parse_results(src)
