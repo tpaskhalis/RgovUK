@@ -1,6 +1,3 @@
-# create environment for Selenium driver
-.denv <- new.env(parent = emptyenv())
-
 #' Get all document search filters applicable to government publications
 #'
 #' \code{get_filters} parses the filter options available for selecting
@@ -24,10 +21,13 @@
 get_filters <- function(field = c("all", "values", "descriptors")) {
   field <- match.arg(field)
   
-  .denv$driver <- create_driver()
+  if (!exists("driver", where = .govenv)) {
+    stop("Browser instance could not be found. Try, running start_browser() first")
+  }
+  
   url <- paste0(BASEURL, PUBLICATIONS)
-  .denv$driver$navigate(url)
-  src <- .denv$driver$getPageSource()
+  .govenv$driver$navigate(url)
+  src <- .govenv$driver$getPageSource()
   filters <- parse_filters(src, field = field)
   filters
 }
@@ -55,16 +55,16 @@ use_filter <- function(selection, filter_type = c("menu", "text")) {
                      "div[contains(@class,'filter')]/",
                      sprintf("option[@value='%s']", selection)
                      ), collapse = "/")
-    filter <- .denv$driver$findElement("xpath", xpath)
+    filter <- .govenv$driver$findElement("xpath", xpath)
     filter$clickElement()
   }
   else {
     xpath <- paste(c("//form[@id='document-filter']",
                      "fieldset",
                      "div[contains(@class,'filter')]/",
-                     sprintf("input[@name='%s']", selection)
+                     "input[@name='keywords']"
                      ), collapse = "/")
-    filter <- .denv$driver$findElement("xpath", xpath)
+    filter <- .govenv$driver$findElement("xpath", xpath)
     filter$sendKeysToElement(list(selection))
   }
 }
