@@ -36,17 +36,16 @@ download_pages <- function() {
   repeat {
     src <- .govenv$driver$getPageSource()
     res <- parse_results(src)
-    txts <- vapply(res, RCurl::getURL, character(1))
     
-    pages <- character()
-    pages <- c(pages, vapply(txts, get_html_body))
+    txts <- character()
+    txts <- c(txts, vapply(res, RCurl::getURL, character(1)))
     
     nextpage <- get_next_page()
     if (identical(nextpage, FALSE)) {
       break
     }
   }
-  pages
+  txts
 }
 
 download <- function(directory, url) {
@@ -89,17 +88,17 @@ parse_results <- function(src) {
   urls <- unlist(lapply(res,
                         function(x) XML::xpathSApply(x, xpath,
                                                      XML::xmlGetAttr, name = "href")))
-  # TODO: add organisation names to return
-  xpath <- ".//li[@class='document-row']//li[@class='organisations']"
-  orgs <- unlist(lapply(res,
-                        function(x) XML::xpathSApply(x, xpath, XML::xmlValue)))
+  # # TODO: add organisation names to return
+  # xpath <- ".//li[@class='document-row']//li[@class='organisations']"
+  # orgs <- unlist(lapply(res,
+  #                       function(x) XML::xpathSApply(x, xpath, XML::xmlValue)))
+  urls <- vapply(urls, function(x) paste0(BASEURL, x), character(1))
   urls
 }
 
 parse_links <- function(url, type = c("all", "csv", "pdf")) {
   type <- match.arg(type)
   
-  url <- paste0(BASEURL, url)
   txt <- RCurl::getURL(url)
   body <- get_html_body(txt)
   xpath <- "//section[@class='attachment embedded']"
