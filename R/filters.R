@@ -21,9 +21,7 @@
 get_filters <- function(field = c("all", "values", "descriptors")) {
   field <- match.arg(field)
   
-  if (!exists("driver", where = .govenv)) {
-    stop("Browser instance could not be found. Try, running start_browser() first")
-  }
+  check_browser()
   
   url <- paste0(BASEURL, PUBLICATIONS)
   .govenv$driver$navigate(url)
@@ -43,6 +41,8 @@ get_filters <- function(field = c("all", "values", "descriptors")) {
 #' @export 
 use_filter <- function(selection, filter_type = c("menu", "text")) {
   type <- match.arg(filter_type)
+  
+  check_browser()
   
   if (!is.character(selection)) {
     stop(paste0("Selection must be character ",
