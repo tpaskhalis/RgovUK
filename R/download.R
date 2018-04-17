@@ -14,8 +14,10 @@
 download_files <- function(directory, type = c("all", "csv", "pdf")) {
   type <- match.arg(type)
   
+  check_browser()
+  
   repeat {
-    src <- .govenv$driver$getPageSource()
+    src <- unlist(.govenv$driver$getPageSource())
     res <- parse_results(src)
     urls <- unlist(lapply(res, parse_links, type))
     invisible(lapply(urls, function(x) download(directory, x)))
@@ -33,12 +35,15 @@ download_files <- function(directory, type = c("all", "csv", "pdf")) {
 #' 
 #' @export
 download_pages <- function() {
+  check_browser()
+  
   repeat {
-    src <- .govenv$driver$getPageSource()
-    res <- parse_results(src)
+    src <- unlist(.govenv$driver$getPageSource())
+    urls <- parse_results(src)
     
-    txts <- character()
-    txts <- c(txts, vapply(res, RCurl::getURL, character(1)))
+    # txts <- character()
+    # txts <- c(txts, vapply(res, RCurl::getURL, character(1)))
+    txts <- vapply(urls, RCurl::getURL, character(1))
     
     nextpage <- get_next_page()
     if (identical(nextpage, FALSE)) {
@@ -62,13 +67,14 @@ download <- function(directory, url) {
   utils::download.file(url, filepath)
 }
 
-get_next_page <- function() {
+get_next_page <- function(src) {
   # Could be implemented with an XML search
   xpath <- paste(c("//nav[@id='show-more-documents']",
                    "ul[@class='previous-n
                    ext-navigation']",
                    "li[@class='next']",
                    "a"), collapse = "/")
+  
   nextpage <- tryCatch(.govenv$driver$findElement("xpath", xpath),
                        error = function(e) e)
   if (!inherits(nextpage, "error")) {
@@ -82,9 +88,9 @@ get_next_page <- function() {
 
 parse_results <- function(src) {
   body <- get_html_body(src)
-  xpath <- "//div[contains(@class,'filter-results')]"
+  xpath <- "//div[contains(@class,'js-filter-results')]"
   res <- XML::getNodeSet(body, xpath)
-  xpath <- ".//li[@class='document-row']//a"
+  xpath <- ".//li[@class='document-row']/h3/a"
   urls <- unlist(lapply(res,
                         function(x) XML::xpathSApply(x, xpath,
                                                      XML::xmlGetAttr, name = "href")))
