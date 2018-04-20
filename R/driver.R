@@ -19,6 +19,7 @@
 #' }
 #' @param verbose Print out messages
 #' @param check Check the version of Selenium and associated drivers
+#' @param extraCapabilities Optional arguments (browser-specific)
 #' 
 #' @export
 start_browser <- function(port = 4445L,
@@ -39,11 +40,23 @@ start_browser <- function(port = 4445L,
   } else {
     browser <- match.arg(browser)
     
-    driver <- RSelenium::rsDriver(port = port,
-                                  browser = browser,
-                                  verbose = verbose,
-                                  check = check,
-                                  extraCapabilities = extraCapabilities)
+    # Workaround for RSelenium/issues/150
+    if (browser == "phantomjs") {
+      vers <- unlist(binman::list_versions("seleniumserver"))
+      vers <- vers[vers %in% c("3.0.1", "3.5.3")]
+      driver <- RSelenium::rsDriver(port = port,
+                                    browser = browser,
+                                    version = vers[1],
+                                    verbose = verbose,
+                                    check = check,
+                                    extraCapabilities = extraCapabilities)
+    } else {
+      driver <- RSelenium::rsDriver(port = port,
+                                    browser = browser,
+                                    verbose = verbose,
+                                    check = check,
+                                    extraCapabilities = extraCapabilities)
+    }
     
     # driver[["client"]]$setTimeout(type = "page load", milliseconds = 10000)
     # driver[["client"]]$setTimeout(type = "script", milliseconds = 10000)
