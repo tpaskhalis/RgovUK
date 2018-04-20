@@ -2,23 +2,37 @@
 % Please edit documentation in R/download.R
 \name{download_files}
 \alias{download_files}
-\title{Download files published on gov.uk publications 
-\url{https://www.gov.uk/government/publications}}
+\alias{govuk_download_files}
+\title{Download gov.UK publications}
 \usage{
-download_files(directory, type = c("all", "csv", "pdf"))
+download_files(directory, limit = NULL, type = c("all", "csv", "pdf"))
+
+govuk_download_files(directory, limit = NULL, type = c("all", "csv", "pdf"))
 }
 \arguments{
 \item{directory}{Specify directory for download}
 
-\item{type}{file type of downloaded documents. See \code{\link{download_pages}}
+\item{limit}{Numeric value, setting the limit of the number of downloaded files,
+NULL (all files that meet the criteria) by default}
+
+\item{type}{File type of downloaded documents. See \code{\link{download_html}}
  for retrieving page source.
 \describe{
 \item{all}{(default) do not pre-filter on file type}
-\item{csv}{}
-\item{pdf}{}
+\item{csv}{Download only CSV files}
+\item{pdf}{Download only PDF files}
 }}
 }
 \description{
-Download files published on gov.uk publications 
-\url{https://www.gov.uk/government/publications}
+Download files published on 
+\href{https://www.gov.uk/government/publications}{gov.uk publications}
+}
+\examples{
+\dontrun{
+download_files(tempdir(), limit = 10, type = "csv")
+}
+
+}
+\author{
+Tom Paskhalis
 }

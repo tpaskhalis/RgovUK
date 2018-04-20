@@ -4,11 +4,15 @@
 \alias{start_browser}
 \title{Start Selenium driver}
 \usage{
-start_browser(port = 4567L, browser = c("chrome", "firefox", "phantomjs",
-  "internet explorer"), verbose = TRUE)
+start_browser(port = 4445L, docker = TRUE, browser = c("chrome",
+  "firefox", "phantomjs", "internet explorer"), verbose = TRUE,
+  check = TRUE, extraCapabilities = list())
 }
 \arguments{
 \item{port}{Port to use}
+
+\item{docker}{Specify whether instead of launching its own server,
+Docker container is runninng and can be connected to.}
 
 \item{browser}{Which browser should be used
 \describe{
@@ -19,6 +23,10 @@ start_browser(port = 4567L, browser = c("chrome", "firefox", "phantomjs",
 }}
 
 \item{verbose}{Print out messages}
+
+\item{check}{Check the version of Selenium and associated drivers}
+
+\item{extraCapabilities}{Optional arguments (browser-specific)}
 }
 \description{
 \code{start_browser} should be run before execution of other functions in the

@@ -5,9 +5,11 @@
 \alias{govuk_use_filter}
 \title{Filter publications based on selection criteria}
 \usage{
-use_filter(selection, filter_type = c("menu", "text"))
+use_filter(selection, filter_type = c("menu", "keywords", "from_date",
+  "to_date"))
 
-govuk_use_filter(selection, filter_type = c("menu", "text"))
+govuk_use_filter(selection, filter_type = c("menu", "keywords", "from_date",
+  "to_date"))
 }
 \arguments{
 \item{selection}{Must be either a value that defines option from a drop-down
@@ -19,4 +21,14 @@ bar (keyword or date ranges)}
 }
 \description{
 Filter publications based on selection criteria
+}
+\examples{
+\dontrun{
+use_filter("close-consultations")
+use_filter("01/01/2018", filter_type = "from_date")
+}
+
+}
+\author{
+Tom Paskhalis
 }

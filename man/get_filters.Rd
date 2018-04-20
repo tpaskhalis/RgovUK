@@ -13,11 +13,11 @@ govuk_get_filters(field = c("all", "values", "descriptors"))
 \item{field}{specifies the parameter of filter that should be returned, has
 to be one of:
 \describe{
+\item{\code{"all"}}{(default) both attributes and descriptors, 
+as well as possible options for filters with drop-down menus}
 \item{\code{"values"}}{XML tag attributes that can be passed to browser}
 \item{\code{"descriptors"}}{description that can be
 viewed on the website by the enduser, text contained in the XML tag}
-\item{\code{"all"}}{(default) both attributes and descriptors, 
-as well as possible options for filters with drop-down menus}
 }}
 }
 \value{
@@ -28,4 +28,14 @@ list with fields specified in the arguments
 government publicattions. The current options include: keyword search,
 publication type, policy area, department, official document status,
 world locations, date of publication (before/after).
+}
+\examples{
+\dontrun{
+filters <- get_filters()
+head(as.data.frame(filters))
+}
+
+}
+\author{
+Tom Paskhalis
 }
