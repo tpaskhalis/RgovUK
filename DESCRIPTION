@@ -1,19 +1,19 @@
-Package: rgovuk
+Package: RgovUK
 Title: Package for automatic downloading of publications from Gov.UK
 Description: Reproducible, automatic retrieval and manipulation of data from
   the UK government information website <https://www.gov.uk/>.
 Version: 0.0.0.9200
 Authors@R: c(person("Tom", "Paskhalis", email = "tpaskhalis@gmail.com",
                     role = c("aut", "cre")))
-URL: https://github.com/tpaskhalis/rgovuk
-BugReports: https://github.com/tpaskhalis/rgovuk/issues
+URL: https://github.com/tpaskhalis/RgovUK
+BugReports: https://github.com/tpaskhalis/RgovUK/issues
 License: GPL-3 + file LICENSE
 Depends:
   R (>= 3.1.0)
 Imports:
-  RCurl,
+  curl,
+  httr,
   RSelenium (>= 1.7.1),
-  utils,
   XML
 Suggests:
   knitr,
