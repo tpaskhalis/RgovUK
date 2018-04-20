@@ -20,7 +20,7 @@ on the official website if you have to collect more than a handful of documents.
 This package is, for now, only available on GitHub and can be installed by running:
 
 ```
-devtools::install_github("tpaskhalis/rgovuk")
+devtools::install_github("tpaskhalis/RgovUK")
 ```
 
 ## Setting Up RSelenium
@@ -66,6 +66,14 @@ The website contains two key fields: filters and results.
 filters and applying them to narrow down the required documents.
 
 ```
+f <- get_filters(field = "descriptors")
+# f
+# $descriptors
+# [1] "Contains"                 "Publication type"         "Policy area"              "Department"   
+# [5] "Official document status" "World locations"          "Published after"          "Published before"
+```
+
+```
 filters <- get_filters()
 head(as.data.frame(filters))
 #                      values descriptors.txts    opt.groups           opt.values       opt.descriptors
@@ -90,3 +98,16 @@ use_filter("meetings", filter_type = "text")
 ```
 
 ## Results
+
+To download the documents that match the filter criteria as described above,
+the package contains two functions: `download_files` and `download_html`.
+The former allows to download the files the links to which are listed on the
+pages that are listed as search results. The latter downloads the pages themselves.
+This can be particularly useful, when the document search criteria are more 
+complicated than the filter functionality of the website allows to apply.
+Or, when the meta information about the files is required.
+
+```
+temp <- tempdir()
+download_files(temp, limit = 10, type = "csv")
+```
