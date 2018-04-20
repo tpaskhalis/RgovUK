@@ -8,15 +8,22 @@
 #' @param field specifies the parameter of filter that should be returned, has
 #' to be one of:
 #' \describe{
+#' \item{\code{"all"}}{(default) both attributes and descriptors, 
+#' as well as possible options for filters with drop-down menus}
 #' \item{\code{"values"}}{XML tag attributes that can be passed to browser}
 #' \item{\code{"descriptors"}}{description that can be
 #' viewed on the website by the enduser, text contained in the XML tag}
-#' \item{\code{"all"}}{(default) both attributes and descriptors, 
-#' as well as possible options for filters with drop-down menus}
 #' }
 #' 
 #' @return list with fields specified in the arguments
 #' 
+#' @examples 
+#' \dontrun{
+#' filters <- get_filters()
+#' head(as.data.frame(filters))
+#' }
+#' 
+#' @author Tom Paskhalis
 #' @export
 get_filters <- function(field = c("all", "values", "descriptors")) {
   field <- match.arg(field)
@@ -38,8 +45,19 @@ get_filters <- function(field = c("all", "values", "descriptors")) {
 #' @param filter_type Type of filter to which the selection is applied 
 #' (drop-down menu by default)
 #' 
+#' @examples
+#' \dontrun{
+#' use_filter("close-consultations")
+#' use_filter("01/01/2018", filter_type = "from_date")
+#' }
+#' 
+#' @author Tom Paskhalis
 #' @export 
-use_filter <- function(selection, filter_type = c("menu", "text")) {
+use_filter <- function(selection,
+                       filter_type = c("menu",
+                                       "keywords",
+                                       "from_date",
+                                       "to_date")) {
   type <- match.arg(filter_type)
   
   check_browser()
@@ -57,12 +75,11 @@ use_filter <- function(selection, filter_type = c("menu", "text")) {
                      ), collapse = "/")
     filter <- .govenv$driver$findElement("xpath", xpath)
     filter$clickElement()
-  }
-  else {
+  } else {
     xpath <- paste(c("//form[@id='document-filter']",
                      "fieldset",
                      "div[contains(@class,'filter')]/",
-                     "input[@name='keywords']"
+                     sprintf("input[@name='%s']", filter_type)
                      ), collapse = "/")
     filter <- .govenv$driver$findElement("xpath", xpath)
     filter$sendKeysToElement(list(selection))
@@ -88,12 +105,10 @@ parse_filters <- function(src, field = c("values", "descriptors", "all")) {
   if (field == "values") {
     lst <- list(values = values)
     lst
-  }
-  else if (field == "descriptors") {
+  } else if (field == "descriptors") {
     lst <- list(descriptors = txts)
     lst
-  }
-  else if (field == "all") {
+  } else if (field == "all") {
     opts <- lapply(filters, parse_filter_options, field = "all")
     # opt.values and opt.descriptors are assumed to be of equal length,
     # TODO: might be worth just looking at the ancestor of a tag
@@ -116,16 +131,14 @@ parse_filter_options <- function(node,
     values <- NA
     txts <- NA
     groups <- NA
-  }
-  else {
+  } else {
     checkgrps <- XML::getNodeSet(node, "..//optgroup")
     if (length(checkgrps) == 0) {
       values <- unlist(XML::xpathSApply(node, "..//option",
                                         XML::xmlGetAttr, name = "value"))
       txts <- unlist(XML::xpathSApply(node, "..//option", XML::xmlValue))
       groups <- rep(NA, times = length(values))
-    }
-    else {
+    } else {
       opts <- XML::getNodeSet(node, "..//option")
       values <- lapply(opts, function(x) XML::xmlGetAttr(x, name = "value"))
       txts <- lapply(opts, function(x) XML::xmlValue(x))
@@ -144,11 +157,9 @@ parse_filter_options <- function(node,
                 opt.values = values,
                 opt.descriptors = txts)
     lst
-  }
-  else if (field == "values") {
+  } else if (field == "values") {
     values
-  }
-  else if (field == "descriptors") {
+  } else if (field == "descriptors") {
     txts
   }
 }
