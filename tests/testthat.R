@@ -1,4 +1,4 @@
 library("testthat")
-library("rgovuk")
+library("RgovUK")
 
-test_check("rgovuk")
+test_check("RgovUK")
