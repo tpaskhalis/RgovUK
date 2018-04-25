@@ -1,7 +1,19 @@
 language: r
-cache: packages
+sudo: true
 warning_are_errors: true
 r:
   - oldrel
   - release
   - devel
+  
+r_packages:
+  - covr
+
+services:
+  - docker
+
+before_install:
+  - docker pull selenium/standalone-firefox:3.10.0
+
+after_success:
+  - Rscript -e 'library("covr");codecov()'
