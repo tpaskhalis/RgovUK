@@ -1,0 +1,7 @@
+language: r
+cache: packages
+warning_are_errors: true
+r:
+  - oldrel
+  - release
+  - devel
