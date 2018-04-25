@@ -5,8 +5,7 @@
 \title{Start Selenium driver}
 \usage{
 start_browser(port = 4445L, docker = TRUE, browser = c("chrome",
-  "firefox", "phantomjs", "internet explorer"), verbose = TRUE,
-  check = TRUE, extraCapabilities = list())
+  "firefox"), verbose = TRUE, check = TRUE, extraCapabilities = list())
 }
 \arguments{
 \item{port}{Port to use}
@@ -18,8 +17,6 @@ Docker container is runninng and can be connected to.}
 \describe{
 \item{\code{"chrome"}}{}
 \item{\code{"firefox"}}{}
-\item{\code{"phantomjs"}}{}
-\item{\code{"internet explorer"}}{}
 }}
 
 \item{verbose}{Print out messages}

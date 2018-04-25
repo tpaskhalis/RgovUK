@@ -24,16 +24,16 @@ test_that("Firefox can be initiated", {
   stop_browser()
 })
 
-test_that("PhantomJS can be initiated", {
-  start_browser(port = 4443L,
-                docker = FALSE,
-                browser = "phantomjs",
-                verbose = FALSE,
-                check = TRUE)
-  expect_true(exists("driver", where = .govenv))
-  expect_true(exists("server", where = .govenv))
-  stop_browser()
-})
+# test_that("PhantomJS can be initiated", {
+#   start_browser(port = 4443L,
+#                 docker = FALSE,
+#                 browser = "phantomjs",
+#                 verbose = FALSE,
+#                 check = TRUE)
+#   expect_true(exists("driver", where = .govenv))
+#   expect_true(exists("server", where = .govenv))
+#   stop_browser()
+# })
 
 test_that("Docker can be used", {
   id <- system2("docker",

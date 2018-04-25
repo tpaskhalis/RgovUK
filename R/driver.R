@@ -14,8 +14,6 @@
 #' \describe{
 #' \item{\code{"chrome"}}{}
 #' \item{\code{"firefox"}}{}
-#' \item{\code{"phantomjs"}}{}
-#' \item{\code{"internet explorer"}}{}
 #' }
 #' @param verbose Print out messages
 #' @param check Check the version of Selenium and associated drivers
@@ -25,9 +23,7 @@
 start_browser <- function(port = 4445L,
                           docker = TRUE,
                           browser = c("chrome",
-                                      "firefox",
-                                      "phantomjs",
-                                      "internet explorer"),
+                                      "firefox"),
                           verbose = TRUE,
                           check = TRUE,
                           extraCapabilities = list()) {
@@ -40,27 +36,15 @@ start_browser <- function(port = 4445L,
   } else {
     browser <- match.arg(browser)
     
-    # Workaround for RSelenium/issues/150
-    if (browser == "phantomjs") {
-      vers <- unlist(binman::list_versions("seleniumserver"))
-      vers <- vers[vers %in% c("3.0.1", "3.5.3")]
-      driver <- RSelenium::rsDriver(port = port,
-                                    browser = browser,
-                                    version = vers[1],
-                                    verbose = verbose,
-                                    check = check,
-                                    extraCapabilities = extraCapabilities)
-    } else {
-      driver <- RSelenium::rsDriver(port = port,
-                                    browser = browser,
-                                    verbose = verbose,
-                                    check = check,
-                                    extraCapabilities = extraCapabilities)
-    }
+    driver <- RSelenium::rsDriver(port = port,
+                                  browser = browser,
+                                  verbose = verbose,
+                                  check = check,
+                                  extraCapabilities = extraCapabilities)
     
-    # driver[["client"]]$setTimeout(type = "page load", milliseconds = 10000)
-    # driver[["client"]]$setTimeout(type = "script", milliseconds = 10000)
-    # driver[["client"]]$setTimeout(type = "implicit", milliseconds = 10000)
+    driver[["client"]]$setTimeout(type = "page load", milliseconds = 10000)
+    driver[["client"]]$setTimeout(type = "script", milliseconds = 10000)
+    driver[["client"]]$setTimeout(type = "implicit", milliseconds = 10000)
     
     assign("docker", FALSE, envir = .govenv)
     assign("driver", driver[["client"]], envir = .govenv)
