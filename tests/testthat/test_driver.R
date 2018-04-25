@@ -55,7 +55,7 @@ test_that("Browser is able to navigate to the main page", {
                 check = TRUE,
                 extraCapabilities = caps)
  expect_silent(main_page())
- title <- unlist(rgovuk:::get_title())
+ title <- unlist(RgovUK:::get_title())
  expect_identical(title, "Publications - GOV.UK")
  stop_browser()
 })
