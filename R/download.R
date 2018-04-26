@@ -127,7 +127,7 @@ download <- function(directory, url) {
   }
 }
 
-get_next_page <- function(src) {
+get_next_page <- function() {
   xpath <- paste(c("//nav[@id='show-more-documents']",
                    "ul[@class='previous-next-navigation']",
                    "li[@class='next']",
