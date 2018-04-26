@@ -1,14 +1,23 @@
 context("Filters are working")
 
-caps <- list(chromeOptions = list(args = c("--headless", "--disable-gpu")))
-start_browser(port = 4447L,
-              docker = FALSE,
-              browser = "chrome",
-              verbose = FALSE,
-              check = TRUE,
-              extraCapabilities = caps)
+# caps <- list(chromeOptions = list(args = c("--headless", "--disable-gpu")))
+# start_browser(port = 4447L,
+#               docker = FALSE,
+#               browser = "chrome",
+#               verbose = FALSE,
+#               check = TRUE,
+#               extraCapabilities = caps)
+# main_page()
+# on.exit(stop_browser())
+
+id <- system2("docker",
+              args = c("run", "-d", "-p", "4445:4444 selenium/standalone-firefox:3.10.0"),
+              stdout = TRUE)
+Sys.sleep(5)
+start_browser(port = 4445L, docker = TRUE)
 main_page()
-on.exit(stop_browser())
+on.exit({stop_browser()
+  system2("docker", args = c("kill", id), stdout = FALSE)})
 
 test_that("Filters can be obtained", {
   f <- get_filters()
