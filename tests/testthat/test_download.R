@@ -12,7 +12,7 @@ on.exit(stop_browser())
 
 test_that("Files can be downloaded", {
   temp <- tempdir()
-  download_files(temp, limit = 10, type = "csv")
+  download_files(temp, limit = 10, type = "pdf")
   fls <- list.files(temp)
   pdffls <- fls[tools::file_ext(fls) == "pdf"]
   expect_identical(length(pdffls), 10L)
