@@ -3,8 +3,10 @@ Title: Package for automatic downloading of publications from Gov.UK
 Description: Reproducible, automatic retrieval and manipulation of data from
   the UK government information website <https://www.gov.uk/>.
 Version: 0.0.0.9200
-Authors@R: c(person("Tom", "Paskhalis", email = "tpaskhalis@gmail.com",
-                    role = c("aut", "cre")))
+Authors@R: c(person("Tom", "Paskhalis",
+                    email = "tpaskhalis@gmail.com",
+                    role = c("aut", "cre"),
+                    comment = c(ORCID = "0000-0001-9298-8850")))
 URL: https://github.com/tpaskhalis/RgovUK
 BugReports: https://github.com/tpaskhalis/RgovUK/issues
 License: GPL-3 + file LICENSE
