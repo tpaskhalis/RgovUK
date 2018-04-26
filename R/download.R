@@ -197,7 +197,7 @@ parse_links <- function(url, type) {
     # Check file extensions of extracted urls
     paths <- unlist(lapply(lapply(urls, httr::parse_url), `[[`, "path"))
     splitpaths <- strsplit(paths, split = "/")
-    fls <- unlist(lapply(splitpaths, tail, n = 1))
+    fls <- unlist(lapply(splitpaths, utils::tail, n = 1))
     exts <- vapply(fls, tools::file_ext, character(1))
     if (type == "csv") {
       links <- urls[exts == "csv"]
