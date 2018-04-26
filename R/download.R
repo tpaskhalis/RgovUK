@@ -9,8 +9,9 @@
 #' @param type File type of downloaded documents. See \code{\link{download_html}}
 #'  for retrieving page source.
 #' \describe{
-#' \item{all}{(default) do not pre-filter on file type}
+#' \item{all}{(default) download comma-separated values(.csv), Excel(.xls} or Adobe Acrobat(.pdf) files
 #' \item{csv}{Download only CSV files}
+#' \item{xls}{Download only XLS files}
 #' \item{pdf}{Download only PDF files}
 #' }
 #'
@@ -23,7 +24,7 @@
 #' @export
 download_files <- function(directory,
                            limit = NULL,
-                           type = c("all", "csv", "pdf")) {
+                           type = c("all", "csv", "xls", "pdf")) {
   type <- match.arg(type)
   
   check_browser()
@@ -119,6 +120,7 @@ download <- function(directory, url) {
     if (is.null(parsed$hostname)) {
       url <- paste0(BASEURL, url)
     }
+    print(sprintf("Downloading %s from %s", filename, url))
     curl::curl_download(url, filepath)
   } else {
     message(sprintf("The link %s is not a valid http link", url))
@@ -127,8 +129,7 @@ download <- function(directory, url) {
 
 get_next_page <- function(src) {
   xpath <- paste(c("//nav[@id='show-more-documents']",
-                   "ul[@class='previous-n
-                   ext-navigation']",
+                   "ul[@class='previous-next-navigation']",
                    "li[@class='next']",
                    "a"), collapse = "/")
   
@@ -150,17 +151,11 @@ parse_results <- function(src) {
   urls <- unlist(lapply(res,
                         function(x) XML::xpathSApply(x, xpath,
                                                      XML::xmlGetAttr, name = "href")))
-  # # TODO: add organisation names to return
-  # xpath <- ".//li[@class='document-row']//li[@class='organisations']"
-  # orgs <- unlist(lapply(res,
-  #                       function(x) XML::xpathSApply(x, xpath, XML::xmlValue)))
   urls <- vapply(urls, function(x) paste0(BASEURL, x), character(1))
   urls
 }
 
-parse_links <- function(url, type = c("all", "csv", "pdf")) {
-  type <- match.arg(type)
-  
+parse_links <- function(url, type) {
   txt <- httr::content(httr::GET(url), type = "text", encoding = "UTF-8")
   body <- get_html_body(txt)
   xpath <- "//section[@class='attachment embedded']"
@@ -169,21 +164,54 @@ parse_links <- function(url, type = c("all", "csv", "pdf")) {
   if (type == "csv") {
     # exclude preview links
     xpath <- paste(c("./div[@class='attachment-details']",
-                   "a[contains(@href, '.csv') and not(contains(@href, 'preview'))]"),
+                     sprintf("a[%s and %s]",
+                             "contains(@href, '.csv')",
+                             "not(contains(@href, 'preview'))")),
+                   collapse = "//")
+  } else if (type == "xls") {
+    xpath <- paste(c("./div[@class='attachment-details']",
+                     sprintf("a[%s and %s]",
+                             "contains(@href, '.xls')",
+                             "not(contains(@href, 'preview'))")),
                    collapse = "//")
   } else if (type == "pdf") {
     xpath <- paste(c("./div[@class='attachment-details']",
-                     "a[contains(@href, '.pdf') and not(contains(@href, 'preview'))]"),
+                     sprintf("a[%s and %s]",
+                             "contains(@href, '.pdf')",
+                             "not(contains(@href, 'preview'))")),
                    collapse = "//")
   } else {
     xpath <- paste(c("./div[@class='attachment-details']",
-                     "a[not(contains(@href, 'preview'))]"),
+                     sprintf("a[(%s) and %s]",
+                             paste(c("contains(@href, '.csv')",
+                                     "contains(@href, '.xls')",
+                                     "contains(@href, '.pdf')"),
+                                   collapse = " or "),
+                             "not(contains(@href, 'preview'))")),
                    collapse = "//")
   }
   urls <- unlist(lapply(attaches,
                         function(x) XML::xpathSApply(x, xpath,
                                                      XML::xmlGetAttr, name = "href")))
-  urls
+  if (!all(is.null(urls))) {
+    # Check file extensions of extracted urls
+    paths <- unlist(lapply(lapply(urls, httr::parse_url), `[[`, "path"))
+    splitpaths <- strsplit(paths, split = "/")
+    fls <- unlist(lapply(splitpaths, tail, n = 1))
+    exts <- vapply(fls, tools::file_ext, character(1))
+    if (type == "csv") {
+      links <- urls[exts == "csv"]
+    } else if (type == "xls") {
+      links <- urls[exts == "xls"]
+    } else if (type == "pdf") {
+      links <- urls[exts == "pdf"]
+    } else {
+      links <- urls
+    }
+    links
+  } else {
+    NULL
+  }
 }
 
 #' @rdname download_files
