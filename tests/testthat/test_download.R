@@ -12,9 +12,10 @@ on.exit(stop_browser())
 
 test_that("Files can be downloaded", {
   temp <- tempdir()
-  download_files(temp, limit = 10)
-  files <- list.files(temp)
-  expect_identical(length(files), 10L)
+  download_files(temp, limit = 10, type = "csv")
+  fls <- list.files(temp)
+  pdffls <- fls[tools::file_ext(fls) == "pdf"]
+  expect_identical(length(pdffls), 10L)
 })
 
 test_that("HTML source can be downloaded", {
