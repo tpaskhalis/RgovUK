@@ -14,11 +14,13 @@ test_that("Browser (default, Chrome) can be initiated", {
 })
 
 test_that("Firefox can be initiated", {
+  caps <- list(`moz:firefoxOptions` = list(args = list("-headless")))
   start_browser(port = 4442L,
                 docker = FALSE,
                 browser = "firefox",
                 verbose = TRUE,
-                check = TRUE)
+                check = TRUE,
+                extraCapabilities = caps)
   expect_true(exists("driver", where = .govenv))
   expect_true(exists("server", where = .govenv))
   stop_browser()
