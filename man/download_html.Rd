@@ -3,7 +3,7 @@
 \name{download_html}
 \alias{download_html}
 \alias{govuk_download_html}
-\title{Download the HTML source of pages published on 
+\title{Download the HTML source of pages published on
 \href{https://www.gov.uk/government/publications}{gov.uk publications}}
 \usage{
 download_html(limit = NULL)
@@ -15,7 +15,7 @@ govuk_download_html(limit = NULL)
 NULL (all pages that meet the criteria) by default}
 }
 \description{
-Download the HTML source of pages published on 
+Download the HTML source of pages published on
 \href{https://www.gov.uk/government/publications}{gov.uk publications}
 }
 \examples{
