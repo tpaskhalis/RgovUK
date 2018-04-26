@@ -1,4 +1,9 @@
 # RgovUK
+
+[![CRAN](https://www.r-pkg.org/badges/version/RgovUK)](https://cran.r-project.org/package=RgovUK)
+[![Build Status](https://travis-ci.org/tpaskhalis/RgovUK.png?branch=master)](https://travis-ci.org/tpaskhalis/RgovUK)
+[![codecov.io](https://codecov.io/github/tpaskhalis/RgovUK/coverage.svg?branch=master)](https://codecov.io/github/tpaskhalis/RgovUK?branch=master)
+
 An R package for downloading data from the [gov.UK publications](https://www.gov.uk/government/publications)
 
 ## Introduction
