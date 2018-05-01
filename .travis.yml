@@ -8,6 +8,7 @@ r:
   
 r_packages:
   - covr
+  - devtools
 
 services:
   - docker
